@@ -46,7 +46,7 @@ module SlaterDeterminant
     """
     function Base.:*(sla1::Slater{T}, sla2::Slater{T}) :: Slater{T} where T
         mat = sla1.V * sla2.V
-        return Slater{T}(sla1.name*sla2.name, mat)
+        return Slater{T}(sla1.name*"*"*sla2.name, mat)
     end
 
 
