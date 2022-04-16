@@ -8,6 +8,17 @@ using LinearAlgebra
 using Test
 using JLD
 
+
+L = 6
+N = 19
+
+
+rlpts = Tuple{Float64, Float64}[]
+for yidx = 1:1:L; for xidx = 1:1:L
+    push!(rlpts, (xidx-1, yidx-1))
+end; end
+
+
 """
 平均场哈密顿量下的自旋关联
 """
@@ -30,18 +41,25 @@ function spin_corr(i, j, grup, grdn)
 end
 
 
+"""
+磁结构因子
+"""
+function msf(grup, grdn)
+    fmsf = 0.
+    afmsf = 0.
+    for (rid, rpt) in enumerate(rlpts)
+        sig = -1^(rpt[1] + rpt[2])
+        fmsf += spin_corr(1, rid, grup, grdn)
+        afmsf += sig * spin_corr(1, rid, grup, grdn)
+    end
+    return fmsf, afmsf
+end
 
-L = 6
-N = 19
 
-rlpts = Tuple{Float64, Float64}[]
-for yidx = 1:1:L; for xidx = 1:1:L
-    push!(rlpts, (xidx-1, yidx-1))
-end; end
 
 kpts, k4tab = triangle_k4tab(L)
 
-ftpts, fmat = fourier_matrix(L, (-0.5, 0.5*sqrt(3)), (0.5, 0.5*sqrt(3)), rlpts)
+#ftpts, fmat = fourier_matrix(L, (-0.5, 0.5*sqrt(3)), (0.5, 0.5*sqrt(3)), rlpts)
 #ftop = rlmat2ftmat(h0, fmat)
 
 fmat2 = fourier_matrix_pts(kpts, (-0.5, 0.5*sqrt(3)), (0.5, 0.5*sqrt(3)), rlpts)
@@ -51,7 +69,7 @@ fmat2 = fourier_matrix_pts(kpts, (-0.5, 0.5*sqrt(3)), (0.5, 0.5*sqrt(3)), rlpts)
 #    println(kp[1], " ", kp[2])
 #end
 
-@test all(isapprox.(fmat, fmat2, atol=1e-10))
+#@test all(isapprox.(fmat, fmat2, atol=1e-10))
 
 
 #latplt = plot()
@@ -88,17 +106,26 @@ end
 h0up = copy(h0)
 h0dn = copy(h0)
 
-slatup, slatdn = mean_field_slater(h0up, h0dn, N)
-eqgrtup, eqgrtdn = mean_field_parameters(slatup, slatdn)
-
-
 hamup_rl = ftmat2rlmat(h0up, fmat2)
 hamdn_rl = ftmat2rlmat(h0dn, fmat2)
 
 slaup_rl, sladn_rl = mean_field_slater(hamup_rl, hamdn_rl, N)
 grup_rl, grdn_rl = mean_field_parameters(slaup_rl, sladn_rl)
 
-println(spin_corr(1, 2, grup_rl, grdn_rl))
+println(msf(grup_rl, grdn_rl))
+
+exit()
+
+
+
+
+#slatup, slatdn = mean_field_slater(h0up, h0dn, N)
+#eqgrtup, eqgrtdn = mean_field_parameters(slatup, slatdn)
+
+
+
+
+
 
 
 #h0_rl = ftmat2rlmat(h0, fmat2)
@@ -137,7 +164,6 @@ grup_rl, grdn_rl = mean_field_parameters(slaup_rl, sladn_rl)
 
 println(spin_corr(1, 2, grup_rl, grdn_rl))
 #println(hamup)
-
 for iidx = 1:1:10
     global hamup, hamdn
     slaup, sladn = mean_field_slater(hamup, hamdn, N)
