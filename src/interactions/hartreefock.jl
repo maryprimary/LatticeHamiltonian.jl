@@ -97,6 +97,23 @@ end
 
 
 """
+创建实空间位置
+a1 = (-0.5, 0.5*√3)
+a2 = (0.5, 0.5*√3)
+"""
+function triangle_points(L)
+    a1 = (-0.5, 0.5*√3)
+    a2 = (0.5, 0.5*√3)
+    latt_arr = Tuple{Float64, Float64}[]
+    for yi = 0:1:L-1; for xi = 0:1:L-1
+        rx = xi*a1[1] + yi*a2[1]
+        ry = xi*a1[2] + yi*a2[2]
+        push!(latt_arr, (rx, ry))
+    end; end
+    return latt_arr
+end
+
+"""
 创建k4tab
 b1 = (−2π, 2π/√3)
 b2 = (2π, 2π/√3)

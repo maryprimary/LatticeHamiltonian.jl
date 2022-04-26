@@ -1,6 +1,13 @@
 module LatticeHamiltonian
 
 
+
+include("bravais_utils.jl")
+export bravais_index_from_posi, bravais_posi_from_index
+
+
+
+
 include("operators/operators.jl")
 export FermiHamiltonian, DenseFermiOpt, SparseFermiOpt
 export sparse2dense
@@ -18,7 +25,6 @@ struct FermiHamiltonian{LOPT, SOPT}
 end
 
 
-
 include("slater/slater.jl")
 #using .SlaterDeterminant
 #export Slater
@@ -31,7 +37,7 @@ export sort_triangluar_kpair
 
 include("interactions/hartreefock.jl")
 export triangle_k4tab, mean_field_slater, mean_field_parameters, mean_field_hamiltonian
-export mean_field_hamiltonian_rl
+export mean_field_hamiltonian_rl, triangle_points
 
 
 end # module
