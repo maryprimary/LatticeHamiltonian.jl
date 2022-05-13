@@ -101,11 +101,11 @@ end
 a1 = (-0.5, 0.5*√3)
 a2 = (0.5, 0.5*√3)
 """
-function triangle_points(L)
+function triangle_points(L1, L2)
     a1 = (-0.5, 0.5*√3)
     a2 = (0.5, 0.5*√3)
     latt_arr = Tuple{Float64, Float64}[]
-    for yi = 0:1:L-1; for xi = 0:1:L-1
+    for yi = 0:1:L2-1; for xi = 0:1:L1-1
         rx = xi*a1[1] + yi*a2[1]
         ry = xi*a1[2] + yi*a2[2]
         push!(latt_arr, (rx, ry))
@@ -118,17 +118,17 @@ end
 b1 = (−2π, 2π/√3)
 b2 = (2π, 2π/√3)
 """
-function triangle_k4tab(L)
-    b1 = (-2π/L, 2π/(L*√3))
-    b2 = (2π/L, 2π/(L*√3))
+function triangle_k4tab(L1, L2)
+    b1 = (-2π/L1, 2π/(L1*√3))
+    b2 = (2π/L2, 2π/(L2*√3))
     latt_arr = Tuple{Float64, Float64}[]
-    for yi = 0:1:L-1; for xi = 0:1:L-1
+    for yi = 0:1:L2-1; for xi = 0:1:L1-1
         kx = xi*b1[1] + yi*b2[1]
         ky = xi*b1[2] + yi*b2[2]
         kx, ky = map_to_fbz_triangluar(kx, ky)
         push!(latt_arr, (kx, ky))
     end; end
-    Lsq = L^2
+    Lsq = L1*L2
     k4tab = zeros(Int64, Lsq, Lsq, Lsq)
     for k1=1:1:Lsq; for k2 = 1:1:Lsq; for k3 = 1:1:Lsq
         k4x = latt_arr[k1][1] + latt_arr[k2][1] - latt_arr[k3][1]
