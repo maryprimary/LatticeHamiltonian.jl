@@ -83,3 +83,12 @@ function Base.:exp(op::SparseFermiOpt{T}) :: SparseFermiOpt{T} where T
     )
 end
 
+
+"""
+给算符adjoint
+"""
+function Base.:adjoint(op::DenseFermiOpt{T}) :: DenseFermiOpt{T} where T
+    mat = adjoint(op.V)
+    return DenseFermiOpt{T}("adj-"*op.name, mat)
+end
+
